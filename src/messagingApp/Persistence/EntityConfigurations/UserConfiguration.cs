@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Core.Application.Security;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -36,6 +37,19 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasMany(u => u.ChatUsers)
                .WithOne(cu => cu.User)
                .HasForeignKey(cu => cu.UserId);
+
+
+        byte[] passwordSalt, passwaordSalt;
+        HashingHelper.CreatePasswordHash("admin", out passwordSalt, out passwaordSalt);
+        //TODO: Add user seed data
+        builder.HasData(new User
+        {
+            Id = Guid.NewGuid(),
+            Nickname = "admin",
+            Email = "admin@mail.com",
+            PasswordHash = passwaordSalt,
+            PasswordSalt = passwordSalt,
+        });
 
     }
 }
