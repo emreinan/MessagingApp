@@ -41,6 +41,8 @@ namespace Application.Features.Auth.Commands.Login
                 //business rule 2
                 _authBusinessRules.PasswordShouldMatch(request.Login.Password, user!);
 
+                await _authService.DeleteOldRefreshTokens(user!.Id);
+
                 var accessToken = _authService.CreateAccessToken(user!);
                 var refreshToken = await _authService.CreateRefreshTokenAsync(user!, request.IpAddress);
 
