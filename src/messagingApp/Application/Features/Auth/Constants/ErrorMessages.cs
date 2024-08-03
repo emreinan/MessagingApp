@@ -14,6 +14,8 @@ internal static class ErrorMessages
     internal const string RefreshTokenNotFound = "Refresh token not found";
     internal const string InvalidRefreshToken ="Invalid refresh token";
     internal const string IpDoesNotMatch = "IP address does not match";
+    internal const string InvalidVerificationCode = "Invalid verification code";
+
 
 
 }

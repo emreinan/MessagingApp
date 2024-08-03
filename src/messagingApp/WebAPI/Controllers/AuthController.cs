@@ -1,6 +1,7 @@
 ﻿using Application.Features.Auth.Commands.Login;
 using Application.Features.Auth.Commands.Refresh;
 using Application.Features.Auth.Commands.Register;
+using Application.Features.Auth.Commands.VerifyEmail;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +35,13 @@ namespace WebAPI.Controllers
         {
             string ipAddress = HttpContext.Connection.RemoteIpAddress!.MapToIPv4().ToString();
             RefreshTokenCommand command = new() { Token = refreshtToken, IpAddress = ipAddress };
+            var response = await mediator.Send(command);
+            return Ok(response);
+        }
+
+        [HttpGet("VerifyEmail")]
+        public async Task<IActionResult> VerifyEmailAsync([FromQuery] VerifyEmailCommand command)
+        {
             var response = await mediator.Send(command);
             return Ok(response);
         }
