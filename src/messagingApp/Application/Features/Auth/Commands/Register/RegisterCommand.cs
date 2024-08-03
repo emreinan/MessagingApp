@@ -1,4 +1,5 @@
-﻿using Application.Features.Auth.Rules;
+﻿using Application.Features.Auth.Events;
+using Application.Features.Auth.Rules;
 using Application.Services.Auth;
 using Application.Services.Repositories;
 using Core.Application.Security;
@@ -22,12 +23,14 @@ public class RegisterCommand : IRequest<RegisteredResponse>
         private readonly IUserRepository _userRepository;
         private readonly IAuthService _authService;
         private readonly AuthBusinessRules _authBusinessRules;
+        private readonly IMediator _mediator;
 
-        public RegisterCommandHandler(IUserRepository userRepository, IAuthService authService, AuthBusinessRules authBusinessRules)
+        public RegisterCommandHandler(IUserRepository userRepository, IAuthService authService, AuthBusinessRules authBusinessRules, IMediator mediator)
         {
             _userRepository = userRepository;
             _authService = authService;
             _authBusinessRules = authBusinessRules;
+            _mediator = mediator;
         }
 
         public async Task<RegisteredResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -48,6 +51,13 @@ public class RegisterCommand : IRequest<RegisteredResponse>
 
             var accessToken = _authService.CreateAccessToken(newUser);
             var refreshToken = await _authService.CreateRefreshTokenAsync(newUser, request.IpAddress);
+
+            await _mediator.Publish(new SendEmailVerificationEvent
+            {
+                UserId = newUser.Id,
+                Email = newUser.Email,
+                Nickname = newUser.Nickname
+            });
 
             return new RegisteredResponse
             {
