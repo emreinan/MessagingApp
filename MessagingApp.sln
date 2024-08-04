@@ -11,21 +11,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "corePackages", "corePackage
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "messagingApp", "messagingApp", "{60308F9C-9B17-480D-A758-F16739628437}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebMVC", "src\messagingApp\WebMVC\WebMVC.csproj", "{FCD260CD-2488-4CA2-BE37-28173FA1EDC8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebMVC", "src\messagingApp\WebMVC\WebMVC.csproj", "{FCD260CD-2488-4CA2-BE37-28173FA1EDC8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "src\messagingApp\WebAPI\WebAPI.csproj", "{470C30F4-2962-497A-A880-0EF65114FADF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPI", "src\messagingApp\WebAPI\WebAPI.csproj", "{470C30F4-2962-497A-A880-0EF65114FADF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "src\messagingApp\Domain\Domain.csproj", "{D3F019C0-35D6-48E1-8B6D-D4EBE46C6418}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "src\messagingApp\Domain\Domain.csproj", "{D3F019C0-35D6-48E1-8B6D-D4EBE46C6418}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "src\messagingApp\Application\Application.csproj", "{49E07341-A924-4B55-AF1D-3C75E3EA50FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "src\messagingApp\Application\Application.csproj", "{49E07341-A924-4B55-AF1D-3C75E3EA50FA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistence", "src\messagingApp\Persistence\Persistence.csproj", "{601B8CF4-C387-4ADD-840D-C7946271D5AA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "src\messagingApp\Persistence\Persistence.csproj", "{601B8CF4-C387-4ADD-840D-C7946271D5AA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "src\messagingApp\Infrastructure\Infrastructure.csproj", "{A97BA842-C7B7-4C8E-BAFC-9EABBDD31849}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "src\messagingApp\Infrastructure\Infrastructure.csproj", "{A97BA842-C7B7-4C8E-BAFC-9EABBDD31849}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Application", "src\corePackages\Core.Application\Core.Application.csproj", "{185DA4BE-B106-4D5F-83CB-639604CC9C26}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Application", "src\corePackages\Core.Application\Core.Application.csproj", "{185DA4BE-B106-4D5F-83CB-639604CC9C26}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Persistence", "src\corePackages\Core.Persistence\Core.Persistence.csproj", "{8C3A3A0E-C476-4993-989E-6487A0923DAE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Persistence", "src\corePackages\Core.Persistence\Core.Persistence.csproj", "{8C3A3A0E-C476-4993-989E-6487A0923DAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
