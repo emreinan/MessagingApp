@@ -1,4 +1,5 @@
 ﻿using Application.Features.Auth.Rules;
+using Application.Features.Chats.Rules;
 using Application.Services.Auth;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,7 @@ public static class ApplicationServiceRegistrations
 
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<AuthBusinessRules>();
+        services.AddScoped<ChatBusinessRules>();
 
         
         services.AddFluentValidation(f => f.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
