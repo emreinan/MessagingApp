@@ -5,6 +5,7 @@ namespace Application.Services.Repositories;
 
 public interface IChatRepository : IRepository<Chat, Guid>, IAsyncRepository<Chat, Guid>
 {
+    Task<List<Chat>> GetChatsByUserIdAsync(Guid UserId);
 }
 
 

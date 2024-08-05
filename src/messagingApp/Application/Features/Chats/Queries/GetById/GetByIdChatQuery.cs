@@ -18,15 +18,7 @@ public class GetByIdChatQuery : IRequest<GetByIdChatResponse>
                 include: i=>i.Include(c=>c.ChatUsers).ThenInclude(cu=>cu.User));
             chatBusinessRules.ChatShouldExistWhenSelected(chat);
 
-            var chatUser = chat.ChatUsers.Select(cu =>
-                new ChatUserDto
-                {
-                    UserId = cu.User.Id,
-                    Nickname = cu.User.Nickname
-                }).ToList();
-
             var response = mapper.Map<GetByIdChatResponse>(chat);
-            response.ChatUsers = chatUser;
 
             return response;
         }
