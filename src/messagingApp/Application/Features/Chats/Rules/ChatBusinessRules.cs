@@ -1,6 +1,8 @@
 ﻿using Application.Features.Auth.Constants;
+using Application.Features.Chats.Constant;
 using Application.Services.Repositories;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +17,23 @@ public class ChatBusinessRules(IChatRepository chatRepository)
     {
         if (chat is null)
             throw new Exception("Chat not found");
+    }
+    public void UserShouldExistWhenSelected(User? user)
+    {
+        if (user is null)
+            throw new Exception("Chat not found");
+    }
+
+    public void UserShouldNotBeInChatWhenJoining(ChatUser? chatUser)
+    {
+        if (chatUser is not null)
+            throw new Exception("User is already in this chat");
+    }
+
+    public void CheckUserLimitWhenJoining(Chat chat)
+    {
+        if (chat.ChatUsers.Count>= ChatConstants.MaxUsersInChat)
+            throw new Exception("Chat is full");
     }
 }
 

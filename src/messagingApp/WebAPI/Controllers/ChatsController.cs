@@ -1,4 +1,5 @@
 ﻿using Application.Features.Chats.Commands.Create;
+using Application.Features.Chats.Commands.Join;
 using Application.Features.Chats.Queries.GetById;
 using Application.Features.Chats.Queries.GetList;
 using Azure;
@@ -29,6 +30,13 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] CreateChatCommand command)
+        {
+            var response = await mediator.Send(command);
+            return Ok(response);
+        }
+
+        [HttpPost("Join")]
+        public async Task<IActionResult> Join([FromBody] JoinChatCommand command)
         {
             var response = await mediator.Send(command);
             return Ok(response);
