@@ -1,6 +1,7 @@
 ﻿using Application.Features.Chats.Commands.Create;
 using Application.Features.Chats.Commands.Join;
 using Application.Features.Chats.Queries.GetById;
+using Application.Features.Chats.Queries.GetByUserId;
 using Application.Features.Chats.Queries.GetList;
 using Azure;
 using MediatR;
@@ -42,5 +43,11 @@ namespace WebAPI.Controllers
             return Ok(response);
         }
 
+        [HttpGet("GetByUserId{UserId}")]
+        public async Task<IActionResult> GetByUserId([FromRoute] Guid UserId)
+        {
+            var response = await mediator.Send(new GetByUserIdChatQuery { UserId = UserId});
+            return Ok(response);
+        }
     }
 }
