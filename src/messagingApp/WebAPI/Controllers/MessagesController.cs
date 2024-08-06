@@ -1,4 +1,5 @@
 ﻿using Application.Features.Messages.Commands.SendMessage;
+using Application.Features.Messages.Queires.GetListByChatId;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,13 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> SendMessage([FromBody] SendMessageCommand command)
         {
             var response = await mediator.Send(command);
+            return Ok(response);
+        }
+
+        [HttpGet("GetByChatId/{ChatId}")]
+        public async Task<IActionResult> GetMessageByChatId([FromRoute] Guid ChatId)
+        {
+            var response = await mediator.Send(new GetListByChatIdMessageQuery { ChatId = ChatId });
             return Ok(response);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Application.Features.Messages.Commands.SendMessage;
+using Application.Features.Messages.Queires.GetListByChatId;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -15,5 +16,7 @@ public class MappingProfiles : Profile
     {
         CreateMap<Message, SendMessageResponse>();
         CreateMap<SendMessageCommand, Message>();
+        CreateMap<Message, GetListByChatIdMessageListItemDto>().ForMember(dest => dest.SenderName,
+            opt => opt.MapFrom(src => src.User.Nickname));
     }
 }
