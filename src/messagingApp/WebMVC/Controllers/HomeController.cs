@@ -1,32 +1,28 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 using WebMVC.Models;
 
-namespace WebMVC.Controllers
+namespace WebMVC.Controllers;
+
+public class HomeController: Controller
 {
-    public class HomeController : Controller
+    public async Task<IActionResult> Index()
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        
+        return View();
     }
+
+    public async Task<IActionResult> GetChatMessages(Guid chatId)
+    {
+
+        return PartialView("_ChatMessages");
+    }
+
+    public async Task<IActionResult> GetUserChatsAsync()
+    {
+
+        return PartialView("_UserChats");
+    }
+
 }
