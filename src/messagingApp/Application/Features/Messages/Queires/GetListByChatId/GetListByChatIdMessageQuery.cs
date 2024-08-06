@@ -2,7 +2,6 @@
 using Application.Services.Repositories;
 using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.OAuth.Claims;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

@@ -2,7 +2,6 @@
 using Application.Services.Mail;
 using Application.Services.Repositories;
 using MediatR;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;

@@ -2,7 +2,9 @@
 using Application.Features.Chats.Rules;
 using Application.Features.Messages.Rules;
 using Application.Services.Auth;
-using FluentValidation.AspNetCore;
+using Core.Application.Pipelines.Authorization;
+using Core.Application.Pipelines.Validation;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -19,14 +21,18 @@ public static class ApplicationServiceRegistrations
         services.AddScoped<ChatBusinessRules>();
         services.AddScoped<MessageBusinessRules>();
 
-        
-        services.AddFluentValidation(f => f.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
-        //services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
-
         services.AddMediatR(configuration =>
         {
             configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+            configuration.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
+            configuration.AddOpenBehavior(typeof(RequestValidationBehavior<,>));
+
         });
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly()); // Validators gelitrsin, injekte edilebilir hale getirsin.
+        
+        //services.AddFluentValidation(f => f.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
+        //services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+
 
         return services;
     }

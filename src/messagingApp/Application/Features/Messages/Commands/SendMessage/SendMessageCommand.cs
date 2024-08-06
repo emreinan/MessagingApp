@@ -1,6 +1,7 @@
 ﻿using Application.Features.Messages.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
+using Core.Application.Pipelines.Authorization;
 using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +13,14 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Messages.Commands.SendMessage;
 
-public class SendMessageCommand : IRequest<SendMessageResponse>
+public class SendMessageCommand : IRequest<SendMessageResponse>, ISecuredRequest
 {
     public Guid ChatId { get; set; }
     public Guid UserId { get; set; }
     public string? Content { get; set; }
     public string? FileIdentifier { get; set; }
+
+    public string[] Roles => [ /*"Admin", "VerifiedUser"*/]; 
 
     class SendMessageCommandHandler(
         IUserRepository userRepository,
@@ -33,13 +36,13 @@ public class SendMessageCommand : IRequest<SendMessageResponse>
         public async Task<SendMessageResponse> Handle(SendMessageCommand request, CancellationToken cancellationToken)
         {
             var chat = await chatRepository.GetAsync(
-               predicate: c=>c.Id==request.ChatId,
-               include: i=>i.Include(u=>u.ChatUsers));
+               predicate: c => c.Id == request.ChatId,
+               include: i => i.Include(u => u.ChatUsers));
             messageBusinessRules.ChatShouldExistWhenSelected(chat);
 
             var senderUser = await userRepository.GetAsync(u => u.Id == request.UserId);
             messageBusinessRules.UserShouldExistWhenSelected(senderUser);
-            
+
             var message = mapper.Map<Message>(request);
             message.SentAt = DateTime.UtcNow;
             await messageRepository.AddAsync(message);
