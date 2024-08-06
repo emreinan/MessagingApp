@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\..\Desktop\BE105\MessagingApplication\MessagingApp\src\corePackages\Core.Exception\Core.Exception.csproj" />
     <ProjectReference Include="..\..\corePackages\Core.Application\Core.Application.csproj" />
     <ProjectReference Include="..\..\corePackages\Core.Persistence\Core.Persistence.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
