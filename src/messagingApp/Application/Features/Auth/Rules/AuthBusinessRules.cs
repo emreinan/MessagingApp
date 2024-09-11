@@ -1,7 +1,7 @@
 ﻿using Application.Features.Auth.Constants;
 using Application.Services.Repositories;
 using Core.Application.Security;
-using Core.Exception.Types;
+using Core.CrossCuttingConcerns.Exceptions.Types;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -34,7 +34,7 @@ public class AuthBusinessRules(IUserRepository userRepository)
     public void RefreshTokenShouldExist(RefreshToken? refreshToken)
     {
         if (refreshToken is null)
-            throw new Exception(ErrorMessages.RefreshTokenNotFound);
+            throw new BusinessException(ErrorMessages.RefreshTokenNotFound);
     }
 
     public void RefreshTokenShouldBeActive(RefreshToken refreshToken)

@@ -13,14 +13,14 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Messages.Commands.SendMessage;
 
-public class SendMessageCommand : IRequest<SendMessageResponse>, ISecuredRequest
+public class SendMessageCommand : IRequest<SentMessageResponse>, ISecuredRequest
 {
     public Guid ChatId { get; set; }
     public Guid UserId { get; set; }
     public string? Content { get; set; }
     public string? FileIdentifier { get; set; }
 
-    public string[] Roles => [ /*"Admin", "VerifiedUser"*/]; 
+    public string[] Roles => [/*"Admin", "VerifiedUser"*/];
 
     class SendMessageCommandHandler(
         IUserRepository userRepository,
@@ -29,21 +29,23 @@ public class SendMessageCommand : IRequest<SendMessageResponse>, ISecuredRequest
         IMessageUserStateRepository messageUserStateRepository,
         MessageBusinessRules messageBusinessRules,
         IMapper mapper
-        ) : IRequestHandler<SendMessageCommand, SendMessageResponse>
+        ) : IRequestHandler<SendMessageCommand, SentMessageResponse>
     {
 
 
-        public async Task<SendMessageResponse> Handle(SendMessageCommand request, CancellationToken cancellationToken)
+        public async Task<SentMessageResponse> Handle(SendMessageCommand request, CancellationToken cancellationToken)
         {
+            var senderUser = await userRepository.GetAsync(u => u.Id == request.UserId);
+            messageBusinessRules.UserShouldExistWhenSelected(senderUser);
+
             var chat = await chatRepository.GetAsync(
                predicate: c => c.Id == request.ChatId,
                include: i => i.Include(u => u.ChatUsers));
             messageBusinessRules.ChatShouldExistWhenSelected(chat);
 
-            var senderUser = await userRepository.GetAsync(u => u.Id == request.UserId);
-            messageBusinessRules.UserShouldExistWhenSelected(senderUser);
+            messageBusinessRules.UserShouldBeInChatWhenSelected(chat!, senderUser!);
 
-            var message = mapper.Map<Message>(request);
+			var message = mapper.Map<Message>(request);
             message.SentAt = DateTime.UtcNow;
             await messageRepository.AddAsync(message);
 
@@ -58,7 +60,7 @@ public class SendMessageCommand : IRequest<SendMessageResponse>, ISecuredRequest
 
             await messageUserStateRepository.AddRangeAsync(messageUserStates);
 
-            var response = mapper.Map<SendMessageResponse>(message);
+            var response = mapper.Map<SentMessageResponse>(message);
             return response;
         }
     }

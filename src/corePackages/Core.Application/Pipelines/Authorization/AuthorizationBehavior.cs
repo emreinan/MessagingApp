@@ -1,4 +1,4 @@
-﻿using Core.Exception.Types;
+﻿using Core.CrossCuttingConcerns.Exceptions.Types;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Immutable;

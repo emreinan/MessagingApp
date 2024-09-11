@@ -1,7 +1,7 @@
 ﻿using Application.Features.Auth.Constants;
 using Application.Features.Chats.Constant;
 using Application.Services.Repositories;
-using Core.Exception.Types;
+using Core.CrossCuttingConcerns.Exceptions.Types;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;

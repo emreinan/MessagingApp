@@ -1,6 +1,6 @@
 ﻿namespace Application.Features.Messages.Commands.SendMessage;
 
-public class SendMessageResponse
+public class SentMessageResponse
 {
     public Guid Id { get; set; }
     public Guid ChatId { get; set; }

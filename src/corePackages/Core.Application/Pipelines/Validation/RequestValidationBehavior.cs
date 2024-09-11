@@ -1,41 +1,29 @@
-﻿using Core.Exception.Types;
+﻿using Core.CrossCuttingConcerns.Exceptions.Types;
 using FluentValidation;
 using MediatR;
-using ValidationException = Core.Exception.Types.ValidationException;
+using ValidationException = Core.CrossCuttingConcerns.Exceptions.Types.ValidationException;
 
 namespace Core.Application.Pipelines.Validation;
 
-public class RequestValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
+public class RequestValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators) : IPipelineBehavior<TRequest, TResponse>
+	where TRequest : IRequest<TResponse>
 {
-    private readonly IEnumerable<IValidator<TRequest>> _validators;
+	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+	{
+		var context = new ValidationContext<object>(request);
+		var errors = validators
+			.Select(v => v.Validate(context))
+			.SelectMany(result => result.Errors)
+			.Where(failure => failure != null)
+			.GroupBy(
+			keySelector: x => x.PropertyName,
+			resultSelector: (propertyName, errors) =>
+			new ValidationExceptionModel { Errors = errors.Select(e => e.ErrorMessage), Property = propertyName }).ToList();
 
-    public RequestValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
-    {
-        _validators = validators;
-    }
+		if (errors.Any())
+			throw new ValidationException(errors);
 
-    public async Task<TResponse> Handle(
-        TRequest request,
-        RequestHandlerDelegate<TResponse> next,
-        CancellationToken cancellationToken
-    )
-    {
-        ValidationContext<object> context = new(request);
-        IEnumerable<ValidationExceptionModel> errors = _validators
-            .Select(validator => validator.Validate(context))
-            .SelectMany(result => result.Errors)
-            .Where(failure => failure != null)
-            .GroupBy(
-                keySelector: p => p.PropertyName,
-                resultSelector: (propertyName, errors) =>
-                    new ValidationExceptionModel { Property = propertyName, Errors = errors.Select(e => e.ErrorMessage) }
-            )
-            .ToList();
-
-        if (errors.Any())
-            throw new ValidationException(errors);
-        TResponse response = await next();
-        return response;
-    }
+		TResponse response = await next();
+		return response;
+	}
 }

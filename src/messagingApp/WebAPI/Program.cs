@@ -1,8 +1,8 @@
 using Persistence;
 using Application;
 using Infrastructure;
-using Core.Exception.Extensions;
 using WebAPI;
+using Core.CrossCuttingConcerns.Exceptions.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

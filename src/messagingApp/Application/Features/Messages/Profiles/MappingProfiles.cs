@@ -14,7 +14,7 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-        CreateMap<Message, SendMessageResponse>();
+        CreateMap<Message, SentMessageResponse>();
         CreateMap<SendMessageCommand, Message>();
         CreateMap<Message, GetListByChatIdMessageListItemDto>().ForMember(dest => dest.SenderName,
             opt => opt.MapFrom(src => src.User.Nickname));

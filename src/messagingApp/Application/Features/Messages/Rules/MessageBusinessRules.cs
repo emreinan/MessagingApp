@@ -1,4 +1,4 @@
-﻿using Core.Exception.Types;
+﻿using Core.CrossCuttingConcerns.Exceptions.Types;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -18,6 +18,11 @@ public class MessageBusinessRules
     public void UserShouldExistWhenSelected(User? user)
     {
         if (user is null)
-            throw new BusinessException("Chat not found");
+            throw new BusinessException("User not found");
     }
+    public void UserShouldBeInChatWhenSelected(Chat chat, User user)
+	{
+		if (!chat.ChatUsers.Any(cu => cu.UserId == user.Id))
+			throw new BusinessException("User is not in chat");
+	}
 }
