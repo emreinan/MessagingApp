@@ -19,6 +19,7 @@ public static class PersistenceServiceRegistrations
         services.AddDbContext<AppDbContext>(options =>
         {
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            //options.UseSqlite(configuration.GetConnectionString("Sqlite"));
         });
 
         services.AddScoped<IUserRepository, UserRepository>();

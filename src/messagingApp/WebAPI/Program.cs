@@ -3,6 +3,8 @@ using Application;
 using Infrastructure;
 using WebAPI;
 using Core.CrossCuttingConcerns.Exceptions.Extensions;
+using Persistence.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,11 @@ builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
+//using var scope = app.Services.CreateScope();
+//var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//await context.Database.MigrateAsync();
+
+//if(!app.Environment.IsDevelopment())
 app.ConfigureCustomExceptionMiddleware();
 
 app.UseSwagger();

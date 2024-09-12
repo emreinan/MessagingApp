@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebMVC.Services.Auth;
+using WebMVC.Services.Chat;
+using WebMVC.Services.Message;
 using WebMVC.Services.Token;
 
 namespace WebMVC;
@@ -18,12 +20,21 @@ public static class MVCServiceRegistrations
 			client.BaseAddress = new Uri(apiUrl);
 		});
 
+		services.AddJwtAuthentication(configuration);
 		services.AddHttpContextAccessor();
 		services.AddScoped<IAuthService, HttpAuthService>();
 		services.AddScoped<ITokenService, CookieTokenService>();
+		services.AddScoped<IChatService, HttpChatService>();
+		services.AddScoped<IMessageService, HttpMessageService>();
+		services.AddSignalR();
 
+		return services;
+	}
+
+	public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+	{
 		TokenOptions tokenOptions = configuration.GetSection("TokenOptions").Get<TokenOptions>()
-			?? throw new InvalidOperationException("TokenOptions cant found in configuration");
+					?? throw new InvalidOperationException("TokenOptions cant found in configuration");
 
 		services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 		   .AddJwtBearer(options =>
@@ -77,7 +88,6 @@ public static class MVCServiceRegistrations
 				   }
 			   };
 		   });
-
 		return services;
 	}
 }

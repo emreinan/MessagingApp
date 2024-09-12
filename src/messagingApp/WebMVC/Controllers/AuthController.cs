@@ -34,10 +34,25 @@ public class AuthController(IAuthService authService,
 
 		return RedirectToAction("Index", "Home");
     }
-    [HttpPost("/Register")]
+
+    [HttpGet("/Register")]
     public IActionResult Register()
     {
         return View();
+    }
+    [HttpPost("/Register")]
+    public async Task<IActionResult> Register(RegisterViewModel registerViewModel)
+    {
+        if (!ModelState.IsValid)
+            return View(registerViewModel);
+
+        var registerDto = mapper.Map<RegisterDto>(registerViewModel);
+
+        var token = await authService.RegisterAsync(registerDto);
+        tokenService.SetRefreshToken(token.RefreshToken);
+        tokenService.SetAccessToken(token.AccessToken);
+
+        return RedirectToAction("Index", "Home");
     }
 
     public IActionResult Verify()

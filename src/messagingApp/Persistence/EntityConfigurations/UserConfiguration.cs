@@ -50,23 +50,5 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             PasswordHash = passwordHash,
             PasswordSalt = passwordSalt,
         });
-
-        builder.HasData(new User
-        {
-            Id = Guid.NewGuid(),
-            Nickname = "User1",
-            Email = "user1@mail.com",
-            PasswordHash = passwordHash,
-            PasswordSalt = passwordSalt,
-        });
-
-		builder.HasData(new User
-		{
-			Id = Guid.NewGuid(),
-			Nickname = "User2",
-			Email = "user2@mail.com",
-			PasswordHash = passwordHash,
-			PasswordSalt = passwordSalt,
-		});
 	}
 }

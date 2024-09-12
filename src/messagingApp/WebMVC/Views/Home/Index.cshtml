@@ -1,4 +1,4 @@
-﻿@* @model HomeViewModel *@
+﻿@model HomeViewModel
 
 <div class="d-flex flex-column vh-100">
     <header class="w-100 top-bar shadow">
@@ -43,7 +43,10 @@
             <aside class="col-6 col-sm-4 col-lg-3 col-xl-2" style="z-index:10;">
                 <div id="ContactListContainer" class="d-flex flex-column justify-content-between h-100 border-end border-warning">
                     <ul class="contact-list bg-gradient-orange flex-grow-1 list-unstyled m-0 pt-2">
-                        <partial name="_UserChats" model="Model.UserChats" />
+                       @if (Model?.UserChats != null)
+   {
+       <partial name="_UserChats" model="Model.UserChats" />
+   }
                     </ul>
                 </div>
             </aside>
@@ -51,7 +54,10 @@
                 <div class="d-flex flex-column justify-content-between h-100">
                     <div id="pnlMessageHistory" class="d-flex justify-content-between flex-grow-1">
                         <div class="msg p-3 w-100 pb-5">
-                            <partial name="_ChatMessages" model="Model.ChatMessages" />
+                            @if (Model?.ChatMessages != null)
+   {
+       <partial name="_ChatMessages" model="Model.ChatMessages" />
+   }
                         </div>
                     </div>
                     <div id="pnlMessageSender" class="d-flex justify-content-between p-2 bg-orange border-top border-warning">
@@ -67,8 +73,9 @@
     </div>
 </div>
 
-
-<partial name="_ChatDetailModal" />
+<div id="chatDetailsWrapper">
+    <partial name="_ChatDetailModal" model="Model.ChatDetails" />
+</div>
 <partial name="_ProfileModal" />
 <partial name="_NewChatModal" />
 
@@ -82,23 +89,29 @@
 
     <script>
 
-       function getActiveChatId(){
-            const activeChat = $('.contact-list li.active');
-            const chatId = activeChat.data('chat-id');
-           return chatId;
+        function scrollToBottom() {
+            $('#pnlMessageHistory').scrollTop($('#pnlMessageHistory')[0].scrollHeight);
         }
 
-        function loadChatMessages(chatId, chatName) {
+        function keepActiveChat() {
+            $(`.contact-list li[data-chat-id=${activeChatId}]`).addClass('active');
+        }
+
+        let activeChatId ='';
+
+        function loadChatMessages(chatId) {
             $.get('/Home/GetChatMessages', { chatId: chatId }, (data) => {
                 $('#pnlMessageHistory .msg').html(data);
-                console.log(data)
-                $('#pnlChatInfo .chat-name').text(chatName);
+                scrollToBottom();
             })
         }
 
-        function loadUserChats() {
-            $.get('/Home/GetUserChats', {  }, (data) => {
+        function loadUserChats(callback) {
+            $.get('/Home/GetUserChats', {}, (data) => {
                 $('#ContactListContainer .contact-list').html(data);
+                if (callback === 'function') {
+                    callback();
+                }
             })
         }
 
@@ -116,16 +129,42 @@
             });
         }
 
+        //SignalR
+        var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+
+        connection.start().then(function () {
+            console.log("SignalR bağlantısı kuruldu")
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+
+
+        connection.on("ReceiveMessage", function (messageJson) {
+            var message = JSON.parse(messageJson);
+            var activeChatId = $('.contact-list li.active').data('chat-id');
+
+            console.log("messaj geldi: " + activeChatId);
+            console.log(message);
+
+            if (message.chatId === activeChatId) {
+                loadChatMessages(message.chatId);
+            }
+            loadUserChats(keepActiveChat());
+        });
+
 
         $(document).ready(function () {
-            $('.contact-list li').click(function () {
+            $('.contact-list').on('click', 'li', function () {
                 $('.contact-list li').removeClass('active');
                 $(this).addClass('active');
                 var chatId = $(this).data('chat-id');
                 var chatName = $(this).data('chat-name');
                 console.log(chatName)
-                loadChatMessages(chatId, chatName);
-                loadUserChats();
+                loadChatMessages(chatId);
+                loadChatHeader(chatId);
+                loadChatDetails(chatId);
+                activeChatId = chatId;
             });
 
             $('#groupDetailModal').on('show.bs.modal', function (event) {
@@ -140,39 +179,10 @@
                 loadUserProfile(userId);
             });
 
-
-
-            var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
-
-            connection.start().then(function () {
-                console.log("SignalR bağlantısı kuruldu")
-            }).catch(function (err) {
-                return console.error(err.toString());
-            });
-
-
-
-            connection.on("ReceiveMessage", function (messageJson) {
-                var message = JSON.parse(messageJson);
-                var activeChatId = getActiveChatId();
-
-                console.log("messaj geldi: " + messageJson);
-
-                if (getActiveChatId() === message.chatId) {
-                    appendMessageToChat(message);
-                }
-
-                loadUserChats();
-
-
-            });
-
-
             $('#btnSendMessage').click(function () {
                 const messageContent = $('#messageInput').val();
                 const activeChat = $('.contact-list li.active');
                 const chatId = activeChat.data('chat-id');
-                const chatName = activeChat.data('chat-name');
 
                 if (chatId) {
                     const message = {
@@ -185,8 +195,9 @@
 
                     var messageJson = JSON.stringify(message);
 
-                    connection.invoke("SendMessage", messageJson);
-
+                    connection.invoke("SendMessage", messageJson).catch(function (err) {
+                        return console.error(err.toString());
+                    });
 
                     $('#messageInput').val('').focus();
                 } else {
@@ -196,43 +207,57 @@
 
         });
 
-
-
-     
-
-
         function appendMessageToChat(message) {
-            var isCurrentUser = message.userId === "@Model.UserId";
-            
             var date = new Date(message.sentAt);
             var dateStr = date.getHours() + ":" + date.getMinutes();
-
+            var isCurrentUser = message.userId === "@Model.UserId";
             var messageHtml = isCurrentUser ? `
-                                <div class="d-flex justify-content-end chat-message msg-me">
-                                    <div class="chat-message-box bg-light border border-warning pt-1 pb-3 px-2 rounded-3 text-dark">
-                                        <div class="py-1">${message.content}</div>
-                                        <sub class="d-block text-end text-muted">${new Date(message.sentAt).toLocaleString()}</sub>
-                                    </div>
-                                </div>` : `
-                                <div class="d-flex justify-content-start chat-message">
-                                    <div class="profile-image chat-sender-image-1x profile-image bg-warning text-dark me-3">${message.nickname.substring(0, 2).toUpperCase()}</div>
-                                    <div class="chat-message-box bg-light border border-warning py-3 px-2 rounded-3 text-dark">
-                                        <sup class="d-block text-muted">${message.nickname}</sup>
-                                        <div class="py-1">${message.content}</div>
-                                        <sub class="d-block text-end text-muted">${new Date(message.sentAt).toLocaleString()}</sub>
-                                    </div>
-                                </div>`;
+                                        <div class="d-flex justify-content-end chat-message msg-me">
+                                            <div class="chat-message-box bg-light border border-warning pt-1 pb-3 px-2 rounded-3 text-dark">
+                                                <div class="py-1">${message.content}</div>
+                                                <sub class="d-block text-end text-muted">${dateStr}</sub>
+                                            </div>
+                                        </div>` : `
+                                        <div class="d-flex justify-content-start chat-message">
+                                            <div class="profile-image chat-sender-image-1x profile-image bg-warning text-dark me-3">${message.nickname.substring(0, 2).toUpperCase()}</div>
+                                            <div class="chat-message-box bg-light border border-warning py-3 px-2 rounded-3 text-dark">
+                                                <sup class="d-block text-muted">${message.nickname}</sup>
+                                                <div class="py-1">${message.content}</div>
+                                                <sub class="d-block text-end text-muted">${dateStr}</sub>
+                                            </div>
+                                        </div>`;
             $('#pnlMessageHistory .msg').append(messageHtml);
         }
 
+        $('#FrmCreateGroup').submit(function (e) {
+            e.preventDefault();
+            $.post($(this).attr('action'), $(this).serialize(), function (data) {
+                if (data.success) {
+                    alert('Group created successfully');
+                    $('#newChatModal').modal('hide');
+                    loadUserChats();
+                } else {
+                    alert('Failed to create group.');
+                }).fail(function () {
+                    alert('Failed to create group.');
+                });
+        });
 
-
-
-
-
-
-
-
+        $('FrmJoinGroup').submit(function (e) {
+            e.preventDefault();
+            $.post($(this).attr('action'), $(this).serialize(), function (data) {
+                if (data.success) {
+                    alert('Group joined successfully');
+                    $('#newChatModal').modal('hide');
+                    loadUserChats("@Model.UserId"() => {
+                        $(`.contact-list li[data-chat-id=${activeChatId}]`).addClass('active');)
+                                });
+                            }else {
+                                alert('Failed to join group.');
+                            }).fail(function () {
+                                alert('Failed to join group.');
+                            });
+                        });
 
     </script>
 }

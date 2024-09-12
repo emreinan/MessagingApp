@@ -13,14 +13,14 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Messages.Commands.SendMessage;
 
-public class SendMessageCommand : IRequest<SentMessageResponse>, ISecuredRequest
+public class SendMessageCommand : IRequest<SentMessageResponse>/*, ISecuredRequest*/
 {
     public Guid ChatId { get; set; }
     public Guid UserId { get; set; }
     public string? Content { get; set; }
     public string? FileIdentifier { get; set; }
 
-    public string[] Roles => [/*"Admin", "VerifiedUser"*/];
+    //public string[] Roles => [/*"Admin", "VerifiedUser"*/];
 
     class SendMessageCommandHandler(
         IUserRepository userRepository,

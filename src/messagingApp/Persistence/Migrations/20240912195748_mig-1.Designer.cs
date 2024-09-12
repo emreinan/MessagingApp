@@ -12,7 +12,7 @@ using Persistence.Contexts;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240803090345_mig-1")]
+    [Migration("20240912195748_mig-1")]
     partial class mig1
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.7")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -250,6 +250,30 @@ namespace Persistence.Migrations
                     b.ToTable("RefreshTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.Role", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Role");
+                });
+
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -312,14 +336,45 @@ namespace Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("2231ea69-90a3-42fb-8d99-5fcdfeb133e9"),
+                            Id = new Guid("43dde8f6-4ae1-4d21-9a79-4a7af44d8045"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@mail.com",
                             IsVerified = false,
                             Nickname = "Admin",
-                            PasswordHash = new byte[] { 183, 136, 177, 4, 15, 112, 14, 43, 140, 231, 134, 132, 243, 7, 216, 164, 241, 152, 20, 26, 230, 140, 208, 158, 220, 72, 103, 105, 83, 96, 180, 124, 251, 118, 216, 216, 109, 124, 227, 40, 1, 219, 85, 11, 113, 227, 47, 229, 234, 162, 70, 11, 142, 252, 53, 122, 66, 76, 70, 43, 208, 152, 228, 10 },
-                            PasswordSalt = new byte[] { 27, 128, 231, 202, 125, 198, 133, 71, 159, 91, 102, 230, 147, 126, 179, 243, 157, 163, 84, 151, 63, 200, 80, 246, 254, 138, 27, 35, 235, 160, 134, 219, 16, 44, 170, 31, 252, 213, 206, 40, 69, 77, 86, 150, 12, 3, 56, 125, 190, 36, 196, 157, 10, 103, 206, 43, 2, 30, 154, 246, 121, 63, 135, 192, 190, 233, 123, 20, 102, 148, 136, 136, 42, 42, 234, 1, 75, 33, 144, 84, 13, 11, 95, 146, 113, 17, 36, 49, 251, 193, 162, 242, 30, 220, 83, 29, 17, 250, 132, 150, 146, 159, 22, 109, 75, 66, 179, 40, 54, 24, 7, 101, 180, 97, 9, 238, 108, 73, 177, 25, 44, 80, 27, 164, 38, 235, 35, 45 }
+                            PasswordHash = new byte[] { 51, 206, 10, 216, 20, 55, 56, 119, 156, 215, 76, 136, 158, 146, 214, 46, 37, 5, 245, 146, 225, 229, 168, 204, 69, 169, 85, 182, 192, 161, 155, 236, 88, 122, 241, 89, 66, 6, 12, 57, 8, 51, 243, 227, 213, 68, 88, 232, 55, 244, 36, 126, 143, 100, 37, 236, 243, 96, 180, 230, 116, 216, 28, 31 },
+                            PasswordSalt = new byte[] { 143, 104, 60, 191, 152, 68, 149, 79, 2, 146, 249, 16, 239, 53, 14, 241, 121, 96, 169, 210, 252, 52, 106, 88, 159, 178, 168, 19, 44, 20, 214, 224, 232, 7, 218, 234, 185, 230, 79, 133, 127, 46, 79, 243, 52, 73, 99, 7, 197, 27, 170, 70, 64, 181, 159, 29, 247, 104, 38, 180, 198, 239, 239, 75, 101, 180, 83, 39, 75, 223, 70, 97, 227, 100, 193, 125, 48, 217, 19, 163, 152, 77, 222, 153, 148, 126, 55, 233, 201, 24, 68, 32, 176, 8, 144, 70, 121, 205, 132, 61, 50, 73, 173, 126, 252, 86, 228, 147, 247, 103, 135, 16, 195, 19, 113, 116, 174, 162, 44, 186, 211, 46, 192, 230, 57, 225, 51, 171 }
                         });
+                });
+
+            modelBuilder.Entity("Domain.Entities.UserRole", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId", "RoleId")
+                        .IsUnique();
+
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.ChatUser", b =>
@@ -390,6 +445,25 @@ namespace Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.Entities.UserRole", b =>
+                {
+                    b.HasOne("Domain.Entities.Role", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Entities.Chat", b =>
                 {
                     b.Navigation("ChatUsers");
@@ -402,6 +476,11 @@ namespace Persistence.Migrations
                     b.Navigation("MessageUserStates");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Role", b =>
+                {
+                    b.Navigation("UserRoles");
+                });
+
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Navigation("ChatUsers");
@@ -411,6 +490,8 @@ namespace Persistence.Migrations
                     b.Navigation("Messages");
 
                     b.Navigation("RefreshTokens");
+
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

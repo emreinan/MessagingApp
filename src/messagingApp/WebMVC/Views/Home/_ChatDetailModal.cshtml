@@ -1,4 +1,6 @@
-﻿<div class="modal fade" id="chatDetailModal" tabindex="-1" aria-labelledby="chatDetailModalLabel" aria-hidden="true">
+﻿@model ChatDetailViewModel
+
+<div class="modal fade" id="chatDetailModal" tabindex="-1" aria-labelledby="chatDetailModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -6,11 +8,18 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <h6>Üyeler</h6>
+                <h6>Sohbet Adı : @Model.Name</h6>
+
+                @if (Model.InvitationCode is not null)
+                {
+                    <h6>Davet Kodu : @Model.InvitationCode</h6>
+                }
+                <h6>Üyeler (@Model.ChatUsers.Count) </h6>
                 <ul>
-                    <li>Ahmet</li>
-                    <li>Mehmet</li>
-                    <li>Kerem</li>
+                    @foreach (var user in Model.ChatUsers)
+                    {
+                        <li>@user.Nickname</li>
+                    }
                 </ul>
             </div>
         </div>

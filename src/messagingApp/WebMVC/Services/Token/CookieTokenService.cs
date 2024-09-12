@@ -16,9 +16,7 @@ public class CookieTokenService(IHttpContextAccessor httpContextAccessor) : ITok
 	{
 		httpContextAccessor.HttpContext.Response.Cookies.Append("access_token", accessToken, new CookieOptions
 		{
-			HttpOnly = true,
 			Secure = true,
-			SameSite = SameSiteMode.Strict,
 			Expires = DateTimeOffset.UtcNow.AddMinutes(10)
 		});
 	}
@@ -27,9 +25,7 @@ public class CookieTokenService(IHttpContextAccessor httpContextAccessor) : ITok
 	{
 		httpContextAccessor.HttpContext.Response.Cookies.Append("refresh_token", refreshToken, new CookieOptions
 		{
-			HttpOnly = true,
 			Secure = true,
-			SameSite = SameSiteMode.Strict,
 			Expires = DateTimeOffset.UtcNow.AddMinutes(10)
 		});
 	}

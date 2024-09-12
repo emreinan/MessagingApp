@@ -7,7 +7,7 @@ public interface IChatService
     Task<List<UserChatViewModel>> GetUserChats(Guid userId);
     Task<ChatDetailViewModel> GetChatDetails(Guid chatId);
     Task CreateGroupAsync(string groupName);
-    Task JoinGroupAsync(string code, Guid userId);
+    Task JoinGroupAsync(Guid code, Guid userId);
 
 }
 

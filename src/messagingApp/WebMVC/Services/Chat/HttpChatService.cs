@@ -30,9 +30,9 @@ public class HttpChatService(IHttpClientFactory httpClientFactory) : IChatServic
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 
-    public async Task JoinGroupAsync(string code, Guid userId)
+    public async Task JoinGroupAsync(Guid chatId, Guid userId)
     {
-        var response = await _httpClient.PostAsJsonAsync("/api/Chats/Join", new { chatId = Guid.Parse(code), userId });
+        var response = await _httpClient.PostAsJsonAsync("/api/Chats/Join", new { chatId,  userId });
         await response.EnsureSuccessStatusCodeWithApiError();
     }
 }
