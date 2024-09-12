@@ -1,14 +1,40 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using WebMVC.Models;
+using WebMVC.Services.Auth;
+using WebMVC.Services.DTOs;
+using WebMVC.Services.Token;
 
 namespace WebMVC.Controllers;
 
-public class AuthController : Controller
+public class AuthController(IAuthService authService,
+    IMapper mapper,
+    ITokenService tokenService
+    ) : Controller
 {
     [HttpGet("/Login")]
-    public IActionResult Login()
+	public async Task<IActionResult> Login()
+	{
+		return View();
+	}
+
+	[HttpPost("/Login")]
+    public async Task<IActionResult> Login(LoginViewModel loginViewModel)
     {
-        return View();
+		if (!ModelState.IsValid)
+			return View(loginViewModel);
+
+        var loginDto = mapper.Map<LoginDto>(loginViewModel);
+		var token = await authService.LoginAsync(loginDto);
+
+        tokenService.SetRefreshToken(token.RefreshToken);
+		tokenService.SetAccessToken(token.AccessToken);
+
+		TempData["SuccessMessage"] = "Login successfully!";
+
+		return RedirectToAction("Index", "Home");
     }
+    [HttpPost("/Register")]
     public IActionResult Register()
     {
         return View();

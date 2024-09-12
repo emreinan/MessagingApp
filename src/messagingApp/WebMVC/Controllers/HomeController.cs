@@ -1,27 +1,26 @@
 using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
 using System.Diagnostics;
 using System.Security.Claims;
 using WebMVC.Models;
 
 namespace WebMVC.Controllers;
 
-public class HomeController: Controller
+public class HomeController(IToastNotification toastNotification): Controller
 {
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
-        
-        return View();
+        toastNotification.AddSuccessToastMessage("Welcome to the chat app!");
+		return View();
     }
 
-    public async Task<IActionResult> GetChatMessages(Guid chatId)
+    public IActionResult GetChatMessages()
     {
-
         return PartialView("_ChatMessages");
     }
 
-    public async Task<IActionResult> GetUserChatsAsync()
+    public IActionResult GetUserChatsAsync()
     {
-
         return PartialView("_UserChats");
     }
 

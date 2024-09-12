@@ -31,10 +31,10 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("RefreshToken")]
-        public async Task<IActionResult> RefershTokenAsync([FromQuery] string refreshtToken)
+        public async Task<IActionResult> RefershTokenAsync([FromQuery] string refreshToken)
         {
             string ipAddress = HttpContext.Connection.RemoteIpAddress!.MapToIPv4().ToString();
-            RefreshTokenCommand command = new() { Token = refreshtToken, IpAddress = ipAddress };
+            RefreshTokenCommand command = new() { Token = refreshToken, IpAddress = ipAddress };
             var response = await mediator.Send(command);
             return Ok(response);
         }
