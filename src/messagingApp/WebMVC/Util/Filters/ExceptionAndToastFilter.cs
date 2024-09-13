@@ -8,6 +8,7 @@ namespace WebMVC.Util.Filters;
 public class ExceptionAndToastFilter(IToastNotification toastNotification
 ) : IActionFilter, // Controller action çalşırken veya çalıştıkran sonra neler yapılacağını belirtiyoruz
 	IExceptionFilter // Controller action, exception throw ettiğinde neler yapılacağını belirtiyoruz
+    
 {
     public void OnActionExecuted(ActionExecutedContext context)
     {
@@ -24,7 +25,7 @@ public class ExceptionAndToastFilter(IToastNotification toastNotification
 
             if (controller.TempData["SuccessMessage"] != null)
             {
-                var errorMessage = controller.TempData["SuccessMessage"]!.ToString(); // Bu satır olursa auth servistekiyle aynı olur 2 kez yazar.
+                var errorMessage = controller.TempData["SuccessMessage"]!.ToString();
 				toastNotification.AddSuccessToastMessage(errorMessage, new ToastrOptions
                 {
                     Title = "Başarılı"

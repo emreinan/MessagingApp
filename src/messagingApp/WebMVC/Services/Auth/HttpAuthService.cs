@@ -7,7 +7,8 @@ public class HttpAuthService(IHttpClientFactory httpClientFactory) : IAuthServic
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("ApiClient");
     public async Task<TokenResponse> LoginAsync(LoginDto loginDto)
     {
-        var response = await _httpClient.PostAsJsonAsync("/api/Auth/Login", loginDto);
+
+        var response = await _httpClient.PostAsJsonAsync("/api/Auth/Login", new { loginDto.Email, loginDto.Password});
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<TokenResponse>();
         return result;
@@ -23,7 +24,7 @@ public class HttpAuthService(IHttpClientFactory httpClientFactory) : IAuthServic
 
     public async Task<TokenResponse> RegisterAsync(RegisterDto registerDto)
     {
-        var response = await _httpClient.PostAsJsonAsync("/api/Auth/Register", registerDto);
+        var response = await _httpClient.PostAsJsonAsync("/api/Auth/Register", new {registerDto.Email, registerDto.Password, registerDto.Nickname});
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<TokenResponse>();
         return result;

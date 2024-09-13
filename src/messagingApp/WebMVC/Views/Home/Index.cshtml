@@ -103,8 +103,9 @@
             $.get('/Home/GetChatMessages', { chatId: chatId }, (data) => {
                 $('#pnlMessageHistory .msg').html(data);
                 scrollToBottom();
-            })
-        }
+            }).fail((error) => {
+                console.error("Error loading chat messages: ", error);
+            });
 
         function loadUserChats(callback) {
             $.get('/Home/GetUserChats', {}, (data) => {
@@ -114,6 +115,13 @@
                 }
             })
         }
+
+        function loadChatHeader(chatId) {
+            $.get('/Home/GetChatHeader', { chatId: chatId }, (data) => {
+                $('#pnlChatInfo').html(data);
+            })
+        }
+
 
         function loadUserProfile(userId) {
             $.get('/Home/GetUserProfile', { userId: userId }, function (data) {
@@ -235,7 +243,7 @@
                 if (data.success) {
                     alert('Group created successfully');
                     $('#newChatModal').modal('hide');
-                    loadUserChats();
+
                 } else {
                     alert('Failed to create group.');
                 }).fail(function () {

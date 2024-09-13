@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
 using System.Diagnostics;
@@ -8,6 +9,7 @@ using WebMVC.Services.Message;
 
 namespace WebMVC.Controllers;
 
+[Authorize]
 public class HomeController(/*IToastNotification toastNotification ,*/
     IChatService chatService,
     IMessageService messageService
@@ -66,19 +68,7 @@ public class HomeController(/*IToastNotification toastNotification ,*/
 
     public Guid GetUserId()
     {
-        if (!User.Identity.IsAuthenticated)
-        {
-            throw new UnauthorizedAccessException("Kullanýcý kimliði doðrulanmamýþ.");
-        }
-
-        var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-
-        if (userClaim == null || string.IsNullOrEmpty(userClaim.Value))
-        {
-            throw new ArgumentNullException(nameof(userClaim), "Kullanýcý ID'si bulunamadý.");
-        }
-
-        return Guid.Parse(userClaim.Value);
+        return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
     }
 
     private string GetUserNickname()

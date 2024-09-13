@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 using System.Text;
 using WebMVC.Services.Auth;
 using WebMVC.Services.Chat;
@@ -14,7 +15,8 @@ public static class MVCServiceRegistrations
 {
 	public static IServiceCollection AddMvcServices(this IServiceCollection services, IConfiguration configuration)
 	{
-		services.AddHttpClient("ApiClient", client =>
+		services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services.AddHttpClient("ApiClient", client =>
 		{
 			string apiUrl = configuration["ApiUrl"] ?? throw new InvalidOperationException();
 			client.BaseAddress = new Uri(apiUrl);
