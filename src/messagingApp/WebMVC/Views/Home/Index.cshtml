@@ -106,20 +106,21 @@
             }).fail((error) => {
                 console.error("Error loading chat messages: ", error);
             });
+        }
 
         function loadUserChats(callback) {
             $.get('/Home/GetUserChats', {}, (data) => {
                 $('#ContactListContainer .contact-list').html(data);
-                if (callback === 'function') {
+                if (typeof callback === 'function') {
                     callback();
                 }
-            })
+            });
         }
 
         function loadChatHeader(chatId) {
             $.get('/Home/GetChatHeader', { chatId: chatId }, (data) => {
                 $('#pnlChatInfo').html(data);
-            })
+            });
         }
 
 
@@ -141,12 +142,10 @@
         var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
         connection.start().then(function () {
-            console.log("SignalR bağlantısı kuruldu")
+            console.log("SignalR bağlantısı kuruldu");
         }).catch(function (err) {
             return console.error(err.toString());
         });
-
-
 
         connection.on("ReceiveMessage", function (messageJson) {
             var message = JSON.parse(messageJson);
@@ -158,9 +157,8 @@
             if (message.chatId === activeChatId) {
                 loadChatMessages(message.chatId);
             }
-            loadUserChats(keepActiveChat());
+            loadUserChats(keepActiveChat);
         });
-
 
         $(document).ready(function () {
             $('.contact-list').on('click', 'li', function () {
@@ -168,7 +166,7 @@
                 $(this).addClass('active');
                 var chatId = $(this).data('chat-id');
                 var chatName = $(this).data('chat-name');
-                console.log(chatName)
+                console.log(chatName);
                 loadChatMessages(chatId);
                 loadChatHeader(chatId);
                 loadChatDetails(chatId);
@@ -243,12 +241,12 @@
                 if (data.success) {
                     alert('Group created successfully');
                     $('#newChatModal').modal('hide');
-
                 } else {
                     alert('Failed to create group.');
-                }).fail(function () {
-                    alert('Failed to create group.');
-                });
+                }
+            }).fail(function () {
+                alert('Failed to create group.');
+            });
         });
 
         $('FrmJoinGroup').submit(function (e) {
@@ -257,15 +255,16 @@
                 if (data.success) {
                     alert('Group joined successfully');
                     $('#newChatModal').modal('hide');
-                    loadUserChats("@Model.UserId"() => {
-                        $(`.contact-list li[data-chat-id=${activeChatId}]`).addClass('active');)
-                                });
-                            }else {
-                                alert('Failed to join group.');
-                            }).fail(function () {
-                                alert('Failed to join group.');
-                            });
-                        });
+                    loadUserChats("@Model.UserId", function () {
+                        $(`.contact-list li[data-chat-id=${activeChatId}]`).addClass('active');
+                    });
+                } else {
+                    alert('Failed to join group.');
+                }
+            }).fail(function () {
+                alert('Failed to join group.');
+            });
+        });
 
     </script>
 }
