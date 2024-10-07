@@ -21,6 +21,7 @@ public class ExceptionAndToastFilter(IToastNotification toastNotification
                 {
                     Title = "Hata"
                 });
+                controller.TempData.Remove("ErrorMessage");
             }
 
             if (controller.TempData["SuccessMessage"] != null)
@@ -30,6 +31,7 @@ public class ExceptionAndToastFilter(IToastNotification toastNotification
                 {
                     Title = "Başarılı"
                 });
+                controller.TempData.Remove("SuccessMessage");
             }
         }
     }
@@ -59,7 +61,6 @@ public class ExceptionAndToastFilter(IToastNotification toastNotification
 			else
 				toastNotification.AddErrorToastMessage(apiEx.ApiError.Detail);
 
-			//TODO: implement other exception types
 		}
 
 

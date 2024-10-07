@@ -1,7 +1,7 @@
 ﻿@model List<UserChatViewModel>
 
     @{
-        string cropString(string str, int length) => str.Length > length ? str[..length] + "...": str;
+    string cropString(string str, int length) => string.IsNullOrEmpty(str) ? "" : (str.Length > length ? str[..length] + "..." : str);
     }
 
 @foreach (var chat in Model)
